@@ -1,14 +1,15 @@
 
 #EdmondsKarp O(VE**2)
-#FordFulkerson O(max_flow * E)
 import collections
  
 # This class represents a directed graph using adjacency matrix representation
 class Graph:
   
     def __init__(self,graph):
-        self.graph = graph # residual graph
+        self.graph = [row[:] for row in graph] # residual graph
+        self.flow=[row[:] for row in graph]
         self.ROW = len(graph)
+        self.max_flow=0
   
     def _BFS(self,s, t, parent):
 
@@ -47,7 +48,6 @@ class Graph:
         # This array is filled by BFS and to store path
         parent = [-1] * (self.ROW)
  
-        max_flow = 0 # There is no flow initially
  
         # Augment the flow while there is path from source to sink
         while self._BFS(source, sink, parent) :
@@ -62,7 +62,7 @@ class Graph:
                 s = parent[s]
  
             # Add path flow to overall flow
-            max_flow +=  path_flow
+            self.max_flow +=  path_flow
  
             # update residual capacities of the edges and reverse edges
             # along the path
@@ -72,29 +72,8 @@ class Graph:
                 self.graph[u][v] -= path_flow
                 self.graph[v][u] += path_flow
                 v = parent[v]
-        return max_flow
-        
-    def _DFS(self,u, t, f):
-        '''Returns path flow in residual graph. with upperbound f  '''
-        if u==t: return f 
-        self.visited[u]=True
-        for v,cap in  enumerate(self.graph[u]):
-            if not self.visited[v] and  cap>0:
-                d=self._DFS(v,t,min(f,cap))
-                if d>0:
-                    self.graph[u][v]-=d 
-                    self.graph[v][u]+=d
-                    return d 
-        return 0 
-        
-             
-    # Returns the maximum flow from s to t in the given graph
-    def FordFulkerson(self, source, sink):
- 
-        max_flow = 0 # There is no flow initially
- 
-        while 1 :
-            self.visited=[False]*self.ROW 
-            path_flow = self._DFS(source, sink, float("Inf"))
-            if path_flow==0: return max_flow
-            max_flow+=path_flow 
+        for i in range(self.ROW):
+            for j in range(self.ROW):
+                if self.flow[i][j]>0:
+                    self.flow[i][j]=self.graph[j][i]
+    
