@@ -1,14 +1,5 @@
-# farm tour poj2135
-# min cost flow 
 import heapq
-inpt=iter(['4 5',
-'1 2 1',
-'2 3 1',
-'3 4 1',
-'1 3 2',
-'2 4 2'])
-N,M=tuple(map(int,next(inpt).split()))
-V=N+1
+V=?
 G=[[] for _ in range(V)]
 
 
@@ -61,9 +52,3 @@ def min_cost_flow(s,t,f):
             G[v][e.rev].cap+=d
             v=prevv[v]
     return res
-
-for _ in range(M):
-    u,v,c=tuple(map(int,next(inpt).split()))
-    add_edge(u,v,1,c)
-    add_edge(v,u,1,c)
-print (min_cost_flow(1,N,2))
