@@ -3,13 +3,17 @@
 import collections
  
 # This class represents a directed graph using adjacency matrix representation
-class Graph:
+class Dinic:
   
-    def __init__(self,graph):
-        self.graph = [row[:] for row in graph] # residual graph
-        self.ROW = len(graph)
+    def __init__(self,V):
+        self.graph = [[0]*V for _ in range(V)] # residual graph
+        self.ROW = V
         self.level=[0]*self.ROW
-  
+        self.flows=dict()
+    def add_edge(self,u,v,c):
+        self.graph[u][v]=c
+        self.flows[u,v]=0
+
     def _BFS(self,s, t):
 
         # Create a queue for BFS
@@ -33,18 +37,20 @@ class Graph:
         return self.level[t]>0
     def _DFS(self,u,t,f):
         if u==t: return f 
-        total_flow=0
         for i,cap  in enumerate(self.graph[u]):
             if self.level[i]==self.level[u]+1 and cap>0:
                 d=self._DFS(i,t,min(f,cap))
                 if d>0:
                     self.graph[u][i]-=d
                     self.graph[i][u]+=d
+                    if (u,i) in self.flows:
+                        self.flows[u,i]+=d
+                   
                     return d 
-        return total_flow 
+        return 0 
              
     # Returns the maximum flow from s to t in the given graph
-    def Dinic(self, source, sink):
+    def max_flow(self, source, sink):
  
         # This array is filled by BFS and to store path
         #flow_matrix = [[0]*self.ROW for _ in range(self.ROW)] 
