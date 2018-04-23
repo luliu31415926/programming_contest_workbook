@@ -1,5 +1,48 @@
 # geometry functions 
- 
+from math import * 
+class Vec:
+    def __init__(self,x,y):
+        self.x=x
+        self.y=y
+    def times(self,r):
+        return Vec(self.x*r,self.y*r)
+
+    def norm(self):
+        return hypot(self.x,self.y)
+    def normalize(self):
+        return Vec(self.x/self.norm(),self.y/self.norm())
+    def polar_angle(self):
+        # 从正x轴到vector的角度in radian [0,2*pi) 
+        return fmod(atan2(self.y,self.x)+2*pi,2*pi)
+
+    def equal(self,vec):
+        return self.x==vec.x and self.y==vec.y
+    def compare(self,vec):
+        # return True if self is smaller than vec  
+        if self.x==vec.x: return self.y<vec.y
+        else: return self.x<vec.x 
+    def add(self,vec):
+        return Vec(self.x+vec.x,self.y+vec.y)
+    def sub(self,vec):
+        return Vec(self.x-vec.x,self.y-vec.y)
+
+    def dot(self,vec):
+        #uvcos(theta)
+        return self.x*vec.x+self.y*vec.y
+    def cross(self,vec):
+        #uvsin(theta)
+        return self.x*vec.y-self.y*vec.x
+    def project(self,vec):
+        # project self onto vec 
+        r=vec.normalize()
+        return r.times(r.dot(self))
+
+
+
+
+
+
+
 ######### integration using simpson formula ########
 def simpson(func,a,b):
     return (b-a)/6*(func(a)+4*func((a+b)/2)+func(b))
@@ -18,23 +61,68 @@ def width(points,x):
             lb=min(lb,y)
             ub=max(ub,y)
     return max(0,ub-lb)
-###############points and lines ########################
+###############点和线########################
 
-import numpy as np
 eps=0.00001
+def 
+
+def sub(p1,p2):
+    #return p1-p2 
+    #line centered at origin
+    return p1[0] - p2[0], p1[1]-p2[1]
+
+def cross(p1,p2):
+    # cross product: uvsin(theta)
+    # if ==0: parallel 
+    return p1[0] * p2[1] - p2[0] * p1[1]
+
+def dot(p1,p2):
+    # dot product uvcos(theta)
+    # if ==0, perpendicular 
+    return p1[0]*p2[0]+p1[1]*p2[1]
+
+def quad(a,b):
+    # which quadrant point (a,b) is 
+    if a > 0:
+        if b > 0:
+            return 2
+        if b < 0:
+            return 8
+        if b == 0:
+            return 1
+    if a < 0:
+        if b > 0:
+            return 4
+        if b < 0:
+            return 6
+        if b == 0:
+            return 5
+    if a == 0:
+        if b > 0:
+            return 3
+        if b < 0:
+            return 7
+        if b == 0:
+            return 0
+    assert False
+
+
+
+
+
+
 
 def on_seg(p1,p2,q):
     # whether point q is on segment p1-p2 (including pint p1 and p2 )
     p1,p2,q=tuple(map(np.array,(p1,p2,q)))
-    return abs(np.cross(p1-q,p2-q)-0)<eps and np.dot(p1-q,p2-q)<=0
+    return abs(cross(p1-q,p2-q)-0)<eps and np.dot(p1-q,p2-q)<=0
 
 def intersection(p1,p2,q1,q2):
     # calculate the intersection point of segment p1-p2 and q1-q2 
-    p1,p2,q1,q2=tuple(map(np.array,(p1,p2,q1,q2)))
-    if np.cross(q2-q1,p2-p1)==0: 
+    if np.cross(sub(q2,q1),p2-p1)==0: 
         # parallel lines 
         return None 
-    return np.cross(q2-q1,q1-p1)/np.cross(q2-q1,p2-p1)*(p2-p1)+p1
+    return np.cross(sub(q2,q1),sub(q1-p1))/np.cross(q2-q1,p2-p1)*(p2-p1)+p1
 
 def is_connected(p1,p2,q1,q2):
     inter=intersection(p1,p2,q1,q2)
@@ -83,6 +171,14 @@ def hulls(Points):
         U.append(p)
         L.append(p)
     return U,L
+
+
+
+
+
+
+
+
 
 # U,L = hulls([(0,0),(1,1),(0,1),(1,0),(1,3),(3,1),(2,2)])
 # returns

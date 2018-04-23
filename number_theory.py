@@ -11,6 +11,34 @@ def extgcd(a,b,d):
     x,y=extgcd(b,a%b)
     return y,x-int(a/b)*y
 
+#最大公约数
+def gcd(a,b):
+    # O(logmax(a,b))
+    if b==0: return a
+    return gcd(b,a%b)
+#最小公倍数 least common multiple
+def lcm(a,b):
+    return a*b//gcd(a,b)
+def lcm(args):
+    ret=lcm(args[0],args[1])
+    for num in args[2:]:
+        ret=lcm(ret,num)
+    return ret 
+
+
+
+# 最小互质 
+#relative primes 
+
+def rg(a,b):
+    g = abs(gcd(a,b))
+    assert g
+    return a // g, b // g
+
+
+
+
+
 #判定prime number
 def is_prime(n):
     i=2

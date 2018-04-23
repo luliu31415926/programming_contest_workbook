@@ -47,35 +47,40 @@ class Edge:
 		self.fro=fro
 		self.to=to
 		self.cost=cost 
-edge_dict=collections.defaultdict(list)
-def add_edge(fro,to,cost):
-	edge_dict[fro].append(Edge(fro,to,cost))
-def dijkstra(source,V,edge_dict):
-	dist=[-1]*V
-	dist[source]=0
-	predecessor=[None]*V
-	visited=[False]*V
-	visited[source]=True
-	heap=[]
-	for e in edge_dict[source]:
-		heapq.heappush(heap,(e.cost,e.fro,e.to))
-	while heap:
-		cost,fro,to=heapq.heappop(heap)
-		dist[to]=dist[fro]+cost 
-		predecessor[to]=fro 
-		for e in edge_dict[to]:
-			if not visited[e.to]:
-				heapq.heappush(heap,(e.cost,e.fro,e.to))
-		visited[to]=True 
-	return dist, predecessor 
-def path(source,u,predecessor):
-	if predecessor[u] is None: return [] 
-	path=[]
-	while u!=source:
-		path.append(u)
-		u=predecessor[u]
-	path.append(source)
-	return path[::-1]
+class Dijkstra:
+	def __init__(self,V):
+		self.V=V
+		self.edge_dict=collections.defaultdict(list)
+	def add_edge(self,fro,to,cost):
+		self.edge_dict[fro].append(Edge(fro,to,cost))
+	def dijkstra(self,source):
+		dist=[-1]*V
+		dist[source]=0
+		predecessor=[None]*V
+		visited=[False]*V
+		visited[source]=True
+		heap=[]
+		for e in self.edge_dict[source]:
+			heapq.heappush(heap,(e.cost,e.fro,e.to))
+		while heap:
+			cost,fro,to=heapq.heappop(heap)
+			dist[to]=dist[fro]+cost 
+			predecessor[to]=fro 
+			for e in self.edge_dict[to]:
+				if not visited[e.to]:
+					heapq.heappush(heap,(e.cost,e.fro,e.to))
+			visited[to]=True 
+		self.predecessor=predecessor
+		self.dist=dist
+		return dist, predecessor 
+	def path(self,source,u):
+		if self.predecessor[u] is None: return [] 
+		path=[]
+		while u!=source:
+			path.append(u)
+			u=self.predecessor[u]
+		path.append(source)
+		return path[::-1]
 
 ## multi source #### 
 # floyd-warshall # 
@@ -93,7 +98,7 @@ def warshall_floyd(dp,nxt,V):
 		for i in range(V):
 			for j in range(V):
 				if dp[i][k]+dp[k][j]<dp[i][j]:
-					dp[j][j]=dp[i][k]+dp[k][j]
+					dp[i][j]=dp[i][k]+dp[k][j]
 					nxt[i][j]=nxt[i][k]
 				if i==j and dp[i][j]<0:
 					#contain negative cycle  
