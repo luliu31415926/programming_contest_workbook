@@ -230,7 +230,7 @@ def hulls(Points):
     '''Graham scan to find upper and lower convex hulls of a set of 2d points.'''
     U = []
     L = []
-    Points.sort()
+    Points.sort(key=lambda p: (p.x,p.y))
     for p in Points:
         while len(U) > 1 and ccw(U[-2],U[-1],p) >= 0: U.pop()
         while len(L) > 1 and ccw(L[-2],L[-1],p) <= 0: L.pop()
