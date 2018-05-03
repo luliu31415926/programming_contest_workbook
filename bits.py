@@ -39,3 +39,14 @@ def get_subsets(n,k):
         comb=z|y
         ret.append(comb)
     return ret
+
+# count bits '1'
+def countSetBits(n):
+ 
+    count = 0
+    while (n):
+        n &= (n-1) 
+        count+=1
+     
+    return count
+    

@@ -1,3 +1,8 @@
+
+#is power of 2
+def is_power_of_two(x):
+    return x&(x-1)==0
+
 #最大公约数
 def gcd(a,b):
     # O(logmax(a,b))
